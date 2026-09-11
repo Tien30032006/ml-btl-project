@@ -1,34 +1,38 @@
-# Dữ liệu
+# Data
 
 ## Nguồn dữ liệu
 
-- Tên dataset:
-- Nguồn: (UCI / Kaggle / khác) — link:
-- Số lượng mẫu:
-- Số lượng đặc trưng:
-- Loại bài toán: (phân loại / hồi quy / ...)
+- Dataset: German Credit Data (Statlog)
+- UCI ML Repository: https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)
+- Bản CSV tiện dụng (Kaggle): https://www.kaggle.com/datasets/jumpingdino/german-credit-dataset
+- Ngày tải: ...
+- Version: ...
 
-## Vì sao chọn dataset này
+## Quy mô
 
-...
+- 1.000 mẫu
+- 20 đặc trưng gốc (7 numeric, 13 categorical)
+- 1 nhãn nhị phân (default / không default)
 
-## Thách thức chính của dữ liệu
+## Cost matrix
 
-...
+Phân loại sai một khách "bad" thành "good" tốn kém gấp 5 lần so với ngược lại
+(FN đắt gấp 5 lần FP). Dùng để thiết kế cost-sensitive threshold ở bước đánh giá.
 
-## Cách tải dữ liệu
+## Mô tả cột
 
-Nếu dữ liệu lớn (không commit trực tiếp lên GitHub), cung cấp link tải công khai tại đây:
+| Cột | Ý nghĩa | Kiểu |
+|---|---|---|
+| ... | ... | ... |
 
-- Raw data: [Google Drive / GitHub Release link]
-- Sau khi tải, giải nén vào `data/raw/`
+## Mapping nhãn
 
-## Mô tả các file trong `data/raw/`
+| Giá trị gốc | Ý nghĩa | Nhãn dùng trong project |
+|---|---|---|
+| 1 | Good (không default) | 0 |
+| 2 | Bad (default) | 1 |
 
-| File | Mô tả |
-|---|---|
-| | |
+## Quy ước thư mục
 
-## Mô tả các bước tiền xử lý (`data/processed/`)
-
-...
+- `raw/` — dữ liệu gốc, **không chỉnh sửa**.
+- `processed/` — `train.csv`, `test.csv` sau khi làm sạch và chia tách (stratified 80/20).

@@ -15,18 +15,9 @@ env/
 # Jupyter
 .ipynb_checkpoints/
 
-# Data (giữ cấu trúc thư mục nhưng bỏ qua file dữ liệu lớn)
-data/raw/*
-!data/raw/.gitkeep
-data/processed/*
-!data/processed/.gitkeep
-
-# Models (bỏ qua file model nặng, giữ thư mục)
-models/*
-!models/.gitkeep
-
-# Reports xuất ra (giữ file nộp chính thức, bỏ file build tạm nếu có)
-reports/*.tmp
+# File tạm (không bỏ data/model chính)
+*.tmp
+*.log
 
 # OS / editor
 .DS_Store

@@ -1,0 +1,10 @@
+Metric,LR Baseline,LR Tuned,SVM Baseline,SVM Tuned
+Precision,0.549,0.6,0.62,0.62
+Recall,0.4667,0.5,0.5167,0.5167
+F1,0.5045,0.5455,0.5636,0.5636
+ROC-AUC,0.7676,0.7782,0.7849,0.7849
+PR-AUC,0.574,0.59,0.5932,0.5932
+Expected Cost,0.915,0.85,0.82,0.82
+CV PR-AUC (tuned),,0.6248,,0.6454
+Fit time baseline (s),0.0171,,0.0906,
+Tuning time (s),,3.9483,,4.0578

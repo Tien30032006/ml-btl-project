@@ -1,9 +1,9 @@
 ,RF Baseline,RF Tuned
-Precision,0.7669,0.8045
-Recall,0.8929,0.7643
-F1,0.8251,0.7839
-ROC-AUC,0.7882,0.7862
-PR-AUC,0.8976,0.9013
-Expected Cost,0.565,0.955
-CV PR-AUC (tuned),,0.9004
-Time (s),0.4561,30.4524
+Precision,0.7669,0.7
+Recall,0.8929,1.0
+F1,0.8251,0.8235
+ROC-AUC,0.7882,0.7871
+PR-AUC,0.8976,0.9022
+Expected Cost,0.565,0.3
+CV Cost (tuned),,0.2575
+Time (s),0.5509,31.707

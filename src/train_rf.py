@@ -10,7 +10,6 @@ from src.preprocess import load_processed_data, split_features_target, build_pre
 
 
 import time
-import os
 import joblib
 import numpy as np
 
@@ -30,6 +29,7 @@ from sklearn.metrics import (classification_report,
                             recall_score,
                             f1_score,
                             confusion_matrix,
+                            make_scorer,
 
 )
                             
@@ -55,12 +55,12 @@ def expected_cost(y_true, y_pred, c_fn=C_FN, c_fp=C_FP):
     return (c_fn * fn + c_fp * fp) / len(y_true)
 
 
-def evaluate_model(model, x_test, y_test, fit_time=None, tuning_time=None,
+def evaluate_model(model, x_test, y_test, threshold = 0.5,  fit_time=None, tuning_time=None,
                    cv_score=None, best_params=None, name="model"):
    
     t0 = time.perf_counter()
     y_proba = model.predict_proba(x_test)[:, 1]
-    y_pred  = (y_proba >= 0.5).astype(int)
+    y_pred  = (y_proba >= threshold).astype(int)
 
     metrics = {
         "model":               name,
@@ -70,7 +70,7 @@ def evaluate_model(model, x_test, y_test, fit_time=None, tuning_time=None,
         "ROC-AUC":             roc_auc_score(y_test, y_proba),
         "PR-AUC":              average_precision_score(y_test, y_proba),
         "Expected Cost":       expected_cost(y_test, y_pred),
-        "CV PR-AUC (tuned)":   cv_score if cv_score is not None else np.nan,
+        "CV Cost (tuned)": cv_score if cv_score is not None else np.nan,
         "Best params":         str(best_params) if best_params else "-",
         "Fit time baseline (s)": fit_time if fit_time is not None else np.nan,
         "Tuning time (s)":       tuning_time if tuning_time is not None else np.nan,
@@ -166,7 +166,33 @@ print(f"Fit time baseline: {fit_time_baseline:.2f}s")
 
 # ===============
 # GRID SEARCH CV 
+
 print("\n=== TUNING (GridSearchCV) ===")
+
+
+def expected_cost_scorer(estimator, X, y):
+    """
+    Custom scorer cho tune vì mặc định đang lấy pr auc, phải đổi qua chọn cost expect thấp nhất:
+    - Lấy xác suất dự đoán
+    - Tìm threshold tốt nhất (cost thấp nhất) trên chính fold này
+    - Trả về -cost 
+    """
+
+    # 1. Lấy xác suất lớp 1 (khách tệ)
+    y_proba = estimator.predict_proba(X)[:, 1]
+
+    # 2. Quét threshold để tìm cost nhỏ nhất
+    best_cost = np.inf
+    for thr in np.linspace(0.05, 0.95, 91):
+        y_pred = (y_proba >= thr).astype(int)
+        tn, fp, fn, tp = confusion_matrix(y, y_pred, labels=[0, 1]).ravel()
+        cost = (C_FN * fn + C_FP * fp) / len(y)
+        if cost < best_cost:
+            best_cost = cost
+
+    return -best_cost
+
+
 
 
 
@@ -178,12 +204,16 @@ param_grid = {
 }
 
 
+# cross validation - chia thành 5 phần
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
 grid = GridSearchCV(
     pipeline_baseline, param_grid,
-    scoring="average_precision", cv=cv,
-    n_jobs=-1, verbose=1, refit=True,
+    scoring = expected_cost_scorer, 
+    cv=cv,
+    n_jobs = -1,  # dùng full cpu
+    verbose = 1,   # log 
+    refit = True,
 )
 
 t0 = time.perf_counter()
@@ -191,30 +221,55 @@ grid.fit(x_train, y_train)
 tuning_time = time.perf_counter() - t0
 
 print(f"Best params: {grid.best_params_}")
-print(f"CV PR-AUC (tuned): {grid.best_score_:.4f}")
+print(f"CV Expected Cost  (tuned): {-grid.best_score_:.4f}")
 print(f"Tuning time: {tuning_time:.2f}s")
 
 
 
 
-# ==================
-# TUNED 
+
+
+# ============ CHỌN THRESHOLD TRÊN OOF ============
+from sklearn.model_selection import cross_val_predict
+
+y_proba_oof = cross_val_predict(
+    grid.best_estimator_, x_train, y_train,
+    cv=cv, method="predict_proba", n_jobs=-1
+)[:, 1]
+
+best_thr, best_cost_oof = 0.5, np.inf
+for thr in np.linspace(0.05, 0.95, 91):
+    y_pred = (y_proba_oof >= thr).astype(int)
+    tn, fp, fn, tp = confusion_matrix(y_train, y_pred, labels=[0, 1]).ravel()
+    cost = (C_FN * fn + C_FP * fp) / len(y_train)
+    if cost < best_cost_oof:
+        best_cost_oof, best_thr = cost, thr
+
+print(f"Best threshold (OOF): {best_thr:.2f}")
 
 
 
-print("\n=== TUNED RF ===")
+
+# ============ ĐÁNH GIÁ TEST ============
 best = grid.best_estimator_
+y_proba_t = best.predict_proba(x_test)[:, 1]
+y_pred_t  = (y_proba_t >= best_thr).astype(int)
 
-tuned_metrics, y_proba_t = evaluate_model(
+tuned_metrics, _ = evaluate_model(
     best, x_test, y_test,
-    tuning_time=tuning_time,
-    cv_score=grid.best_score_,
-    best_params=grid.best_params_,
-    name="RF tuned",
-)
+    threshold=best_thr,
 
-y_pred_t = (y_proba_t >= 0.5).astype(int)
+    tuning_time=tuning_time,
+    cv_score=-grid.best_score_,
+    best_params=grid.best_params_,
+    name="RF tuned (cost)",
+)
 print_metrics(tuned_metrics, y_test, y_pred_t)
+
+
+
+
+
 
 
 # ========== results.csv ne ==========

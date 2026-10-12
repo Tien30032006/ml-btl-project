@@ -1,0 +1,9 @@
+,RF Baseline @0.5,RF Tuned @0.5
+Precision,0.764,0.8092
+Recall,0.8786,0.7571
+F1,0.8173,0.7823
+ROC-AUC,0.7742,0.7768
+PR-AUC,0.8949,0.8947
+Expected Cost,0.615,0.975
+Fit time baseline (s),0.363,
+Tuning time (s),,54.5681

@@ -1,2 +1,2 @@
-model__max_depth,model__max_features,model__min_samples_split,model__n_estimators
-10,log2,5,200
+RF
+"{'model__max_depth': 10, 'model__max_features': 'sqrt', 'model__min_samples_split': 10, 'model__n_estimators': 200}"

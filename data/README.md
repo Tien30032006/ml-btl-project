@@ -34,5 +34,5 @@ Phân loại sai một khách "bad" thành "good" tốn kém gấp 5 lần so v�
 
 ## Quy ước thư mục
 
-- `raw/` — dữ liệu gốc, **không chỉnh sửa**.
-- `processed/` — `train.csv`, `test.csv` sau khi làm sạch và chia tách (stratified 80/20).
+- `raw/` - dữ liệu gốc, **không chỉnh sửa**.
+- `processed/` - `train.csv`, `test.csv` sau khi làm sạch và chia tách (stratified 80/20).

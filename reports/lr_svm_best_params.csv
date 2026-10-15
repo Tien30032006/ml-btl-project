@@ -1,2 +1,2 @@
 LR,SVM
-"{'classifier__C': 0.1, 'classifier__class_weight': None, 'classifier__penalty': 'l2', 'classifier__solver': 'liblinear'}","{'classifier__C': 1, 'classifier__class_weight': None, 'classifier__gamma': 'scale', 'classifier__kernel': 'rbf'}"
+"{'classifier__C': 0.1, 'classifier__class_weight': None, 'classifier__l1_ratio': 0.0, 'classifier__max_iter': 5000, 'classifier__solver': 'saga'}","{'classifier__estimator__C': 1, 'classifier__estimator__class_weight': None, 'classifier__estimator__gamma': 'scale', 'classifier__estimator__kernel': 'rbf'}"

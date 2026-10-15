@@ -1,0 +1,17 @@
+{
+  "name": "Random Forest (tuned)",
+  "threshold": 0.31,
+  "cost_matrix": {
+    "FN": 5,
+    "FP": 1
+  },
+  "test_metrics": {
+    "Precision": 0.4074,
+    "Recall": 0.9167,
+    "F1": 0.5641,
+    "ROC-AUC": 0.7818,
+    "PR-AUC": 0.6366,
+    "Cost @0.5": 0.68,
+    "Cost @t* (test)": 0.525
+  }
+}

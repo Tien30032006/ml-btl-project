@@ -55,7 +55,10 @@ def split_features_target(df: pd.DataFrame):
 def get_feature_types(X: pd.DataFrame):
     """
     Numeric  : mọi cột số.
-    Categorical: mọi cột còn lại (object / string / category).
+    Categorical: mọi cột còn lại (bao gồm object / str / string / category).
+
+    Dùng exclude="number" để không phụ thuộc vào dtype chuỗi mặc định
+    thay đổi giữa pandas 2.x và 3.x.
     """
     numerical_features   = X.select_dtypes(include="number").columns.tolist()
     categorical_features = X.select_dtypes(exclude="number").columns.tolist()
@@ -103,7 +106,8 @@ def main():
     df = load_raw_data()
     print(f"  shape gốc: {df.shape}")
 
-    # loại bỏ cột không dùng nếu có (ví dụ job, telephone)
+    # Bỏ job, telephone theo chi-square + RF importance + CV trong notebook 02.
+    # Số liệu và lý do lựa chọn được ghi trong data/README.md.
     drop_cols = [c for c in ["job", "telephone"] if c in df.columns]
     if drop_cols:
         df = df.drop(columns=drop_cols)

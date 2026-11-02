@@ -39,6 +39,8 @@ Bài tập lớn môn Học máy (CO3117).
 
 **Đặc trưng sau khi chọn lọc:** 18 cột (danh sách trong `data/processed/final_features.json`), bỏ `job` và `telephone`.
 
+Nguồn dữ liệu, ý nghĩa từng cột, kết quả EDA và lý do chọn đặc trưng/giữ outlier được tổng hợp trong [data/README.md](data/README.md).
+
 - Numeric (7): `duration`, `amount`, `installment_rate`, `present_residence`, `age`, `number_credits`, `people_liable`.
 - Categorical (11): `status`, `credit_history`, `purpose`, `savings`, `employment_duration`, `personal_status_sex`, `other_debtors`, `property`, `other_installment_plans`, `housing`, `foreign_worker`.
 
@@ -101,7 +103,7 @@ Nếu xác suất được hiệu chỉnh tốt, ngưỡng tối ưu về lý th
 
 ## Cài đặt
 
-Yêu cầu: **Python 3.10+**.
+Yêu cầu: **Python 3.11+** (pandas 3.1.0 yêu cầu Python từ 3.11).
 
 ```bash
 git clone https://github.com/Tien30032006/ml-btl-project.git
